@@ -16,6 +16,10 @@ export function WeatherPage() {
   const [cityToSearch, setCityToSearch] = useState("");
   const [cityWeatherData, setCityWeatherData] = useState<Weather>();
 
+  useEffect(()=> {
+    getFavoriteCities()
+  }, []);
+
 
   useEffect(() => {
     getFavoriteCities();
@@ -68,6 +72,11 @@ export function WeatherPage() {
     setCityToSearch("")
   }
 
+  function refreshCardSearch(){
+    getFavoriteCities();
+    setCityWeatherData(undefined);
+  }
+
   return (
     <View style={styles.container}>
       <Header />
@@ -79,8 +88,10 @@ export function WeatherPage() {
         </TouchableOpacity>
       </View>
 
-      {cityWeatherData && <WeatherCard weather={cityWeatherData} refreshCard={() => { }} />}
+      {cityWeatherData && <WeatherCard weather={cityWeatherData} refreshCard={refreshCardSearch} />}
 
+    <Text style={styles.favoriteCitiesTitle}>Cidades Favoritas</Text>
+    {isLoading ? <Text>Carregando cidades favoritas...</Text> : favoriteCitiesData.length === 0 ? <Text>Nenhuma cidade favorita encontrada.</Text> : favoriteCitiesData.map((city) => <WeatherCard key={city.location.name} weather={city} refreshCard={getFavoriteCities} />)}
     </View>
   );
 }
